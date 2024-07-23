@@ -4,8 +4,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from the repository
-                checkout scm
+                script {
+                    echo 'Checking out source code...'
+                    checkout scm
+                }
             }
         }
 
@@ -13,13 +15,14 @@ pipeline {
             steps {
                 dir('frontend') {
                     script {
+                        echo 'Building frontend Docker image...'
                         try {
-                            // Build Docker image for frontend
                             sh 'sudo docker build -t frontend-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm frontend-image npm test'
                         } catch (e) {
-                            error "Build and Test Frontend failed: ${e}"
+                            echo "Build and Test Frontend failed: ${e}"
+                            error "Build and Test Frontend failed"
                         }
                     }
                 }
@@ -30,13 +33,14 @@ pipeline {
             steps {
                 dir('order-service') {
                     script {
+                        echo 'Building order service Docker image...'
                         try {
-                            // Build Docker image for order service
                             sh 'sudo docker build -t order-service-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm order-service-image ./run-tests.sh'
                         } catch (e) {
-                            error "Build and Test Order Service failed: ${e}"
+                            echo "Build and Test Order Service failed: ${e}"
+                            error "Build and Test Order Service failed"
                         }
                     }
                 }
@@ -47,13 +51,14 @@ pipeline {
             steps {
                 dir('product-service') {
                     script {
+                        echo 'Building product service Docker image...'
                         try {
-                            // Build Docker image for product service
                             sh 'sudo docker build -t product-service-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm product-service-image ./run-tests.sh'
                         } catch (e) {
-                            error "Build and Test Product Service failed: ${e}"
+                            echo "Build and Test Product Service failed: ${e}"
+                            error "Build and Test Product Service failed"
                         }
                     }
                 }
@@ -64,13 +69,14 @@ pipeline {
             steps {
                 dir('user-service') {
                     script {
+                        echo 'Building user service Docker image...'
                         try {
-                            // Build Docker image for user service
                             sh 'sudo docker build -t user-service-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm user-service-image ./run-tests.sh'
                         } catch (e) {
-                            error "Build and Test User Service failed: ${e}"
+                            echo "Build and Test User Service failed: ${e}"
+                            error "Build and Test User Service failed"
                         }
                     }
                 }
@@ -80,11 +86,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    echo 'Deploying services using Docker Compose...'
                     try {
-                        // Deploy all services using Docker Compose
                         sh 'sudo docker-compose -f docker-compose.yml up -d'
                     } catch (e) {
-                        error "Deployment failed: ${e}"
+                        echo "Deployment failed: ${e}"
+                        error "Deployment failed"
                     }
                 }
             }
@@ -93,8 +100,8 @@ pipeline {
 
     post {
         always {
-            // Clean up Docker containers and images if needed
             script {
+                echo 'Cleaning up Docker system...'
                 try {
                     sh 'sudo docker system prune -f'
                 } catch (e) {
