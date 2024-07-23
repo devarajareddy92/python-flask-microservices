@@ -31,7 +31,7 @@ pipeline {
                 dir('order-service') {
                     script {
                         // Build Docker image for order service
-                        sh 'docker build -t order-service-image .'
+                        sh 'sudo docker build -t order-service-image .'
                         // Optional: Run tests
                         // sh 'docker run --rm order-service-image ./run-tests.sh'
                     }
@@ -44,7 +44,7 @@ pipeline {
                 dir('product-service') {
                     script {
                         // Build Docker image for product service
-                        sh 'docker build -t product-service-image .'
+                        sh 'sudo docker build -t product-service-image .'
                         // Optional: Run tests
                         // sh 'docker run --rm product-service-image ./run-tests.sh'
                     }
@@ -57,7 +57,7 @@ pipeline {
                 dir('user-service') {
                     script {
                         // Build Docker image for user service
-                        sh 'docker build -t user-service-image .'
+                        sh 'sudo docker build -t user-service-image .'
                         // Optional: Run tests
                         // sh 'docker run --rm user-service-image ./run-tests.sh'
                     }
@@ -69,7 +69,7 @@ pipeline {
             steps {
                 script {
                     // Deploy all services using Docker Compose
-                    sh 'docker-compose -f docker-compose.yml up -d'
+                    sh 'sudo docker-compose -f docker-compose.yml up -d'
                 }
             }
         }
