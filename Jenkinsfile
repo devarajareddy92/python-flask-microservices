@@ -78,7 +78,7 @@ pipeline {
     post {
         always {
             // Clean up Docker containers and images if needed
-            sh 'docker system prune -f'
+            sh 'sudo docker system prune -f'
         }
     }
 }
