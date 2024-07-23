@@ -11,16 +11,6 @@ pipeline {
             }
         }
 
-        stage('Verify docker-compose.yml') {
-            steps {
-                script {
-                    echo 'Verifying docker-compose.yml file...'
-                    sh 'ls -l'
-                    sh 'cat docker-compose.yml'
-                }
-            }
-        }
-
         stage('Build and Test Frontend') {
             steps {
                 dir('frontend') {
@@ -29,7 +19,7 @@ pipeline {
                         try {
                             sh 'sudo docker build -t frontend-image .'
                             // Optional: Run tests
-                            // sh 'docker run --rm frontend-image npm test'
+                            // sh 'sudo docker run --rm frontend-image npm test'
                         } catch (e) {
                             echo "Build and Test Frontend failed: ${e}"
                             error "Build and Test Frontend failed"
@@ -39,17 +29,113 @@ pipeline {
             }
         }
 
-        // ... other stages ...
-
-        stage('Deploy') {
+        stage('Deploy Frontend') {
             steps {
-                script {
-                    echo 'Deploying services using Docker Compose...'
-                    try {
-                        sh 'sudo docker-compose -f docker-compose.yml up -d'
-                    } catch (e) {
-                        echo "Deployment failed: ${e}"
-                        error "Deployment failed"
+                dir('frontend') {
+                    script {
+                        echo 'Deploying frontend using Docker Compose...'
+                        try {
+                            sh 'sudo docker-compose -f docker-compose.yml up -d'
+                        } catch (e) {
+                            echo "Deploy Frontend failed: ${e}"
+                            error "Deploy Frontend failed"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build and Test Order Service') {
+            steps {
+                dir('order-service') {
+                    script {
+                        echo 'Building order service Docker image...'
+                        try {
+                            sh 'sudo docker build -t order-service-image .'
+                        } catch (e) {
+                            echo "Build and Test Order Service failed: ${e}"
+                            error "Build and Test Order Service failed"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Order Service') {
+            steps {
+                dir('order-service') {
+                    script {
+                        echo 'Deploying order service using Docker Compose...'
+                        try {
+                            sh 'sudo docker-compose -f docker-compose.yml up -d'
+                        } catch (e) {
+                            echo "Deploy Order Service failed: ${e}"
+                            error "Deploy Order Service failed"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build and Test Product Service') {
+            steps {
+                dir('product-service') {
+                    script {
+                        echo 'Building product service Docker image...'
+                        try {
+                            sh 'sudo docker build -t product-service-image .'
+                        } catch (e) {
+                            echo "Build and Test Product Service failed: ${e}"
+                            error "Build and Test Product Service failed"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Product Service') {
+            steps {
+                dir('product-service') {
+                    script {
+                        echo 'Deploying product service using Docker Compose...'
+                        try {
+                            sh 'sudo docker-compose -f docker-compose.yml up -d'
+                        } catch (e) {
+                            echo "Deploy Product Service failed: ${e}"
+                            error "Deploy Product Service failed"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build and Test User Service') {
+            steps {
+                dir('user-service') {
+                    script {
+                        echo 'Building user service Docker image...'
+                        try {
+                            sh 'sudo docker build -t user-service-image .'
+                        } catch (e) {
+                            echo "Build and Test User Service failed: ${e}"
+                            error "Build and Test User Service failed"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy User Service') {
+            steps {
+                dir('user-service') {
+                    script {
+                        echo 'Deploying user service using Docker Compose...'
+                        try {
+                            sh 'sudo docker-compose -f docker-compose.yml up -d'
+                        } catch (e) {
+                            echo "Deploy User Service failed: ${e}"
+                            error "Deploy User Service failed"
+                        }
                     }
                 }
             }
