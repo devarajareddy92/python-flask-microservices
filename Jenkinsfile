@@ -10,6 +10,19 @@ pipeline {
                 }
             }
         }
+        stage('Create Docker Network') {
+            steps {
+                script {
+                    echo 'Creating Docker network...'
+                    try {
+                        sh 'sudo docker network create micro_network || true'
+                    } catch (e) {
+                        echo "Network creation failed: ${e}"
+                        error "Network creation failed"
+                    }
+                }
+            }
+        }
 
         stage('Build and Test Frontend') {
             steps {
