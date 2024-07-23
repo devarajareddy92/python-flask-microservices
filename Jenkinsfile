@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-   // environment {
-        // Define environment variables here if needed
-    //}
-
     stages {
         stage('Checkout') {
             steps {
@@ -17,10 +13,14 @@ pipeline {
             steps {
                 dir('frontend') {
                     script {
-                        // Build Docker image for frontend
-                        sh 'sudo docker build -t frontend-image .'
-                        // Optional: Run tests
-                        // sh 'docker run --rm frontend-image npm test'
+                        try {
+                            // Build Docker image for frontend
+                            sh 'docker build -t frontend-image .'
+                            // Optional: Run tests
+                            // sh 'docker run --rm frontend-image npm test'
+                        } catch (e) {
+                            error "Build and Test Frontend failed: ${e}"
+                        }
                     }
                 }
             }
@@ -30,10 +30,14 @@ pipeline {
             steps {
                 dir('order-service') {
                     script {
-                        // Build Docker image for order service
-                        sh 'sudo docker build -t order-service-image .'
-                        // Optional: Run tests
-                        // sh 'docker run --rm order-service-image ./run-tests.sh'
+                        try {
+                            // Build Docker image for order service
+                            sh 'docker build -t order-service-image .'
+                            // Optional: Run tests
+                            // sh 'docker run --rm order-service-image ./run-tests.sh'
+                        } catch (e) {
+                            error "Build and Test Order Service failed: ${e}"
+                        }
                     }
                 }
             }
@@ -43,10 +47,14 @@ pipeline {
             steps {
                 dir('product-service') {
                     script {
-                        // Build Docker image for product service
-                        sh 'sudo docker build -t product-service-image .'
-                        // Optional: Run tests
-                        // sh 'docker run --rm product-service-image ./run-tests.sh'
+                        try {
+                            // Build Docker image for product service
+                            sh 'docker build -t product-service-image .'
+                            // Optional: Run tests
+                            // sh 'docker run --rm product-service-image ./run-tests.sh'
+                        } catch (e) {
+                            error "Build and Test Product Service failed: ${e}"
+                        }
                     }
                 }
             }
@@ -56,10 +64,14 @@ pipeline {
             steps {
                 dir('user-service') {
                     script {
-                        // Build Docker image for user service
-                        sh 'sudo docker build -t user-service-image .'
-                        // Optional: Run tests
-                        // sh 'docker run --rm user-service-image ./run-tests.sh'
+                        try {
+                            // Build Docker image for user service
+                            sh 'docker build -t user-service-image .'
+                            // Optional: Run tests
+                            // sh 'docker run --rm user-service-image ./run-tests.sh'
+                        } catch (e) {
+                            error "Build and Test User Service failed: ${e}"
+                        }
                     }
                 }
             }
@@ -68,8 +80,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy all services using Docker Compose
-                    sh 'sudo docker-compose -f docker-compose.yml up -d'
+                    try {
+                        // Deploy all services using Docker Compose
+                        sh 'docker-compose -f docker-compose.yml up -d'
+                    } catch (e) {
+                        error "Deployment failed: ${e}"
+                    }
                 }
             }
         }
@@ -78,7 +94,19 @@ pipeline {
     post {
         always {
             // Clean up Docker containers and images if needed
-            sh 'sudo docker system prune -f'
+            script {
+                try {
+                    sh 'docker system prune -f'
+                } catch (e) {
+                    echo "Cleanup failed: ${e}"
+                }
+            }
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
