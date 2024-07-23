@@ -18,7 +18,7 @@ pipeline {
                 dir('frontend') {
                     script {
                         // Build Docker image for frontend
-                        sh 'docker build -t frontend-image .'
+                        sh 'sudo docker build -t frontend-image .'
                         // Optional: Run tests
                         // sh 'docker run --rm frontend-image npm test'
                     }
