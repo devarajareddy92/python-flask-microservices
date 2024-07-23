@@ -15,7 +15,7 @@ pipeline {
                     script {
                         try {
                             // Build Docker image for frontend
-                            sh 'docker build -t frontend-image .'
+                            sh 'sudo docker build -t frontend-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm frontend-image npm test'
                         } catch (e) {
@@ -32,7 +32,7 @@ pipeline {
                     script {
                         try {
                             // Build Docker image for order service
-                            sh 'docker build -t order-service-image .'
+                            sh 'sudo docker build -t order-service-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm order-service-image ./run-tests.sh'
                         } catch (e) {
@@ -49,7 +49,7 @@ pipeline {
                     script {
                         try {
                             // Build Docker image for product service
-                            sh 'docker build -t product-service-image .'
+                            sh 'sudo docker build -t product-service-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm product-service-image ./run-tests.sh'
                         } catch (e) {
@@ -66,7 +66,7 @@ pipeline {
                     script {
                         try {
                             // Build Docker image for user service
-                            sh 'docker build -t user-service-image .'
+                            sh 'sudo docker build -t user-service-image .'
                             // Optional: Run tests
                             // sh 'docker run --rm user-service-image ./run-tests.sh'
                         } catch (e) {
@@ -82,7 +82,7 @@ pipeline {
                 script {
                     try {
                         // Deploy all services using Docker Compose
-                        sh 'docker-compose -f docker-compose.yml up -d'
+                        sh 'sudo docker-compose -f docker-compose.yml up -d'
                     } catch (e) {
                         error "Deployment failed: ${e}"
                     }
@@ -96,7 +96,7 @@ pipeline {
             // Clean up Docker containers and images if needed
             script {
                 try {
-                    sh 'docker system prune -f'
+                    sh 'sudo docker system prune -f'
                 } catch (e) {
                     echo "Cleanup failed: ${e}"
                 }
