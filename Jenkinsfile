@@ -1,6 +1,6 @@
 pipeline {
     agent any
-//
+
     stages {
         stage('Checkout') {
             steps {
@@ -167,10 +167,36 @@ pipeline {
             }
         }
         success {
-            echo 'Pipeline completed successfully!'
+            script {
+                echo 'Pipeline completed successfully!'
+                emailext (
+                    to: 'RishabhR@proteantech.in',
+                    subject: "SUCCESS: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
+                    body: """The build for job ${env.JOB_NAME} was successful.
+
+                        - Build Number: ${env.BUILD_NUMBER}
+                        - Build URL: ${env.BUILD_URL}
+
+                        Please check the details at the above URL.
+                    """
+                )
+            }
         }
         failure {
-            echo 'Pipeline failed!'
+            script {
+                echo 'Pipeline failed!'
+                emailext (
+                    to: 'rishabhl@proteantech.in',
+                    subject: "FAILURE: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
+                    body: """The build for job ${env.JOB_NAME} has failed.
+
+                        - Build Number: ${env.BUILD_NUMBER}
+                        - Build URL: ${env.BUILD_URL}
+
+                        Please check the details at the above URL.
+                    """
+                )
+            }
         }
     }
 }
