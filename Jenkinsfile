@@ -170,7 +170,7 @@ pipeline {
             script {
                 echo 'Pipeline completed successfully!'
                 emailext (
-                    to: 'RishabhR@proteantech.in',
+                    to: 'rishabhl@proteantech.in',
                     subject: "SUCCESS: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
                     body: """The build for job ${env.JOB_NAME} was successful.
 
